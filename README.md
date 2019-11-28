@@ -11,8 +11,6 @@ musmus stands for **mus**cle **mus**ic.
 * [pydaqs](https://github.com/intellsensing/pydaqs)
 * [mido](https://github.com/mido/mido)
 * [python-rtmidi](https://pypi.org/project/python-rtmidi/)
-* [audiomulch](http://www.audiomulch.com/)
-* [loopmidi](http://www.tobias-erichsen.de/software/loopmidi.html)
 
 ## Notes
 * Tested only on Windows
