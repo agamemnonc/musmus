@@ -1,0 +1,2 @@
+# musmus
+Muscle-controlled music
