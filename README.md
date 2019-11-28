@@ -13,4 +13,4 @@ musmus stands for **mus**cle **mus**ic.
 * [python-rtmidi](https://pypi.org/project/python-rtmidi/)
 
 ## Notes
-* Tested only on Windows
+* Tested only on Windows using Python 3.
