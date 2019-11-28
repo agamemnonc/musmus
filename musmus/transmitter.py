@@ -1,11 +1,11 @@
 import mido
 
 
-__all__ == ['Transmitter']
+__all__ = ['Transmitter']
 
 
 class Transmitter(object):
-    def __init__(midi_port, note_x, note_y, note_snap):
+    def __init__(self, midi_port, note_x=60, note_y=61, note_snap=62):
 
         self.midi_port = midi_port
         self.note_x = note_x
@@ -28,7 +28,8 @@ class Transmitter(object):
             self._send_msg(msg)
 
     def set_snap(self, snap):
-        msg = mido.Message('note_on', note=self.note_snap, velocity=snap)
+        """snap: 1-based indexing"""
+        msg = mido.Message('note_on', note=self.note_snap, velocity=snap-1)
         self._send_msg(msg)
 
     def _send_msg(self, msg):

@@ -2,7 +2,7 @@
 
 from os.path import realpath, dirname, join
 from setuptools import setup, find_packages
-import pydaqs
+import musmus
 
 VERSION = musmus.__version__
 PROJECT_ROOT = dirname(realpath(__file__))
