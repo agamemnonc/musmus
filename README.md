@@ -1,7 +1,7 @@
 # musmus
 Muscle-controlled music.
 
-Check out the [installation guidelines](Installation.md).
+Check out the [installation](Installation.md) guidelines.
 
 musmus stands for **mus**cle **mus**ic.
 
