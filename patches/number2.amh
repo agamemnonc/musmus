@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<audiomulch-document version="1" application-path="file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.3" document-path="file:///V:/jacksonlab/Andy">
+<audiomulch-document version="1" application-path="file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4" document-path="file:///C:/Users/nak142/Coding/musmus/patches">
 	<patch>
 		<clock tempo="120" loop-start="0" loop-end="0" loop-enabled="0">
 			<time-signature-timepoints>0	4	|	4
@@ -13,7 +13,31 @@
 		<contraption class="MetasurfacePseudoSP" name="Metasurface">
 			<properties></properties>
 			<presets></presets>
-			<modulation-sources></modulation-sources>
+			<modulation-sources>
+				<property-sources property-name="Snapshot Number" property-index="0">
+					<midi-controller offset="0">
+						<midi-message-spec type="7-bit-control-change" port="0" channel="0" number="2"/>
+					</midi-controller>
+				</property-sources>
+				<property-sources property-name="Interpolate_X" property-index="1">
+					<midi-controller smoothing="0" map-minimum="0" map-maximum="1">
+						<midi-message-spec type="14-bit-control-change" port="0" channel="0" number="0"/>
+						<midi-mapping-curve>
+							<mapping-point in="0" out="0"/>
+							<mapping-point in="16383" out="1"/>
+						</midi-mapping-curve>
+					</midi-controller>
+				</property-sources>
+				<property-sources property-name="Interpolate_Y" property-index="2">
+					<midi-controller smoothing="0" map-minimum="0" map-maximum="1">
+						<midi-message-spec type="14-bit-control-change" port="0" channel="0" number="1"/>
+						<midi-mapping-curve>
+							<mapping-point in="0" out="0"/>
+							<mapping-point in="16383" out="1"/>
+						</midi-mapping-curve>
+					</midi-controller>
+				</property-sources>
+			</modulation-sources>
 		</contraption>
 		<contraption class="SoundOut" name="SoundOut">
 			<properties>
@@ -330,16 +354,16 @@
 					<bool>0</bool>
 				</property>
 				<property index="10" name="Gain_1">
-					<double>1.9693502996650784e-09</double>
+					<double>0.501872540625962</double>
 				</property>
 				<property index="11" name="Gain_2">
-					<double>0.9981596299382073</double>
+					<double>0.1807603625185138</double>
 				</property>
 				<property index="12" name="Gain_3">
-					<double>0.0015541384547280886</double>
+					<double>2.0877771165723744e-05</double>
 				</property>
 				<property index="13" name="Gain_4">
-					<double>0.0002705312694847216</double>
+					<double>0.3173460177017688</double>
 				</property>
 			</properties>
 			<presets></presets>
@@ -360,7 +384,7 @@
 					<double>180</double>
 				</property>
 				<property index="4" name="Feedback">
-					<double>0.3089430894308945</double>
+					<double>0.3085046693290404</double>
 				</property>
 				<property index="5" name="HFRolloffFrequency">
 					<double>20000</double>
@@ -378,13 +402,13 @@
 		<contraption class="SouthPole" name="SouthPole_1">
 			<properties>
 				<property index="0" name="BaseCutoffFrequency">
-					<double>287.11053531433504</double>
+					<double>2510.761859221224</double>
 				</property>
 				<property index="1" name="BaseResonance">
 					<double>0.5199999999999998</double>
 				</property>
 				<property index="2" name="BaseGain">
-					<double>0.9999999999999998</double>
+					<double>1.007966416023493</double>
 				</property>
 				<property index="3" name="InputTriggerThreshold">
 					<double>0.0010000000000000002</double>
@@ -542,13 +566,13 @@
 					<rhythmic-unit>1/16</rhythmic-unit>
 				</property>
 				<property index="52" name="LFO1CutoffFrequencyAmount">
-					<double>0.0005655489753837146</double>
+					<double>0.04956116253829412</double>
 				</property>
 				<property index="53" name="LFO1ResonanceAmount">
 					<double>0</double>
 				</property>
 				<property index="54" name="LFO1GainAmount">
-					<double>0.7399999999999998</double>
+					<double>0.7527402757330012</double>
 				</property>
 				<property index="55" name="LFO2Waveform">
 					<enum>0</enum>
@@ -569,10 +593,10 @@
 					<rhythmic-unit>1/16</rhythmic-unit>
 				</property>
 				<property index="61" name="LFO2CutoffFrequencyAmount">
-					<double>0.02206662192347553</double>
+					<double>0.07000818110565828</double>
 				</property>
 				<property index="62" name="LFO2ResonanceAmount">
-					<double>-0.28</double>
+					<double>-0.31528076356831164</double>
 				</property>
 				<property index="63" name="LFO2GainAmount">
 					<double>0</double>
@@ -588,8 +612,8 @@
 				</property>
 				<property index="1" name="Amplitude">
 					<range>
-						<min>0.0012530179228633642</min>
-						<max>1.0014926195144653</max>
+						<min>0.6883809566497803</min>
+						<max>1.6971373558044434</max>
 					</range>
 				</property>
 				<property index="2" name="Panning">
@@ -601,14 +625,14 @@
 				<property index="3" name="DelayTime">
 					<range>
 						<min>0</min>
-						<max>3133.137451171875</max>
+						<max>3128.024169921875</max>
 					</range>
 				</property>
 				<property index="5" name="Feedback">
-					<double>0.6797872340425533</double>
+					<double>0.694164620785707</double>
 				</property>
 				<property index="6" name="WetDryMix">
-					<double>0.44745459800041626</double>
+					<double>0.7516164152528714</double>
 				</property>
 				<property index="7" name="PitchScaler">
 					<range>
@@ -618,12 +642,12 @@
 				</property>
 				<property index="8" name="InteronsetTime">
 					<range>
-						<min>0.5</min>
-						<max>6.351448059082031</max>
+						<min>0.6462569832801819</min>
+						<max>6.5323967933654785</max>
 					</range>
 				</property>
 				<property index="9" name="QuantizeAmount">
-					<double>0.44730952239030447</double>
+					<double>0.4739278043661346</double>
 				</property>
 				<property index="10" name="QuantizePeriodMultiplier">
 					<double>1</double>
@@ -633,14 +657,14 @@
 				</property>
 				<property index="12" name="GrainDuration">
 					<range>
-						<min>23.943519592285156</min>
-						<max>104.09038543701172</max>
+						<min>9.78413200378418</min>
+						<max>33.58574676513672</max>
 					</range>
 				</property>
 				<property index="13" name="AttDecRatio">
 					<range>
-						<min>0.5265885591506958</min>
-						<max>0.8904280662536621</max>
+						<min>0.522535502910614</min>
+						<max>0.8856099247932434</max>
 					</range>
 				</property>
 				<property index="14" name="GrainSkew">
@@ -661,7 +685,7 @@
 				<property index="17" name="FilterQ">
 					<range>
 						<min>0.019999999552965164</min>
-						<max>0.0999746173620224</max>
+						<max>0.0992073193192482</max>
 					</range>
 				</property>
 				<property index="18" name="Decorrelation">
@@ -734,22 +758,22 @@
 					<bool>0</bool>
 				</property>
 				<property index="3" name="File_1">
-					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.3/Samples/Drums/acoustic_kit/kick-1.wav</soundfile>
+					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4/Samples/Drums/acoustic_kit/kick-1.wav</soundfile>
 				</property>
 				<property index="4" name="File_2">
-					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.3/Samples/Drums/acoustic_kit/ride-1.wav</soundfile>
+					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4/Samples/Drums/acoustic_kit/ride-1.wav</soundfile>
 				</property>
 				<property index="5" name="File_3">
-					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.3/Samples/Drums/acoustic_kit/snare-1.wav</soundfile>
+					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4/Samples/Drums/acoustic_kit/snare-1.wav</soundfile>
 				</property>
 				<property index="6" name="File_4">
-					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.3/Samples/Drums/acoustic_kit/snare-2.wav</soundfile>
+					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4/Samples/Drums/acoustic_kit/snare-2.wav</soundfile>
 				</property>
 				<property index="7" name="File_5">
-					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.3/Samples/Drums/acoustic_kit/crash-hard.wav</soundfile>
+					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4/Samples/Drums/acoustic_kit/crash-hard.wav</soundfile>
 				</property>
 				<property index="8" name="File_6">
-					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.3/Samples/Drums/acoustic_kit/crash-soft.wav</soundfile>
+					<soundfile>file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4/Samples/Drums/acoustic_kit/crash-soft.wav</soundfile>
 				</property>
 				<property index="9" name="File_7">
 					<soundfile></soundfile>
@@ -761,19 +785,19 @@
 					<double>1</double>
 				</property>
 				<property index="12" name="Volume_2">
-					<double>0.21009201850309</double>
+					<double>0.2906092764013389</double>
 				</property>
 				<property index="13" name="Volume_3">
-					<double>0.19000000000000014</double>
+					<double>0.21290749097294348</double>
 				</property>
 				<property index="14" name="Volume_4">
-					<double>0.0004600925154481717</double>
+					<double>0.24523667504383848</double>
 				</property>
 				<property index="15" name="Volume_5">
-					<double>0.009981596299382084</double>
+					<double>0.04999907081188964</double>
 				</property>
 				<property index="16" name="Volume_6">
-					<double>0.0005153036173019523</double>
+					<double>0.28051807930500466</double>
 				</property>
 				<property index="17" name="Volume_7">
 					<double>0</double>
@@ -6844,7 +6868,7 @@
 		<notes visible="0" left="1061" top="73" width="300" height="170" encoding="UTF-8">
 			<para></para>
 		</notes>
-		<metasurface-view visible="1" left="255" top="9" width="1065" height="812" parameters-visible="1" snapshots-visible="1" parameters-width="201" snapshots-width="141" interpolate-mode="1"></metasurface-view>
+		<metasurface-view visible="1" left="358" top="166" width="1081" height="851" parameters-visible="1" snapshots-visible="1" parameters-width="201" snapshots-width="141" interpolate-mode="1"></metasurface-view>
 	</application-view>
 	<contraption-views>
 		<contraption-view contraption-name="SoundOut" patcher-x="-12" patcher-y="-222"/>

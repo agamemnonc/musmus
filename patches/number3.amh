@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<audiomulch-document version="1" application-path="file:///C:/Program%20Files/AudioMulch%202.2.3" document-path="file:///V:/jacksonlab/Andy">
+<audiomulch-document version="1" application-path="file:///C:/Program%20Files%20(x86)/AudioMulch%202.2.4" document-path="file:///C:/Users/nak142/Coding/musmus/patches">
 	<patch>
 		<clock tempo="140" loop-start="0" loop-end="0" loop-enabled="0">
 			<time-signature-timepoints>0	4	|	4
@@ -14,9 +14,14 @@
 			<properties></properties>
 			<presets></presets>
 			<modulation-sources>
+				<property-sources property-name="Snapshot Number" property-index="0">
+					<midi-controller offset="0">
+						<midi-message-spec type="7-bit-control-change" port="0" channel="0" number="2"/>
+					</midi-controller>
+				</property-sources>
 				<property-sources property-name="Interpolate_X" property-index="1">
 					<midi-controller smoothing="0" map-minimum="0" map-maximum="1">
-						<midi-message-spec type="7-bit-control-change" port="0" channel="0" number="16"/>
+						<midi-message-spec type="14-bit-control-change" port="0" channel="0" number="0"/>
 						<midi-mapping-curve>
 							<mapping-point in="0" out="0"/>
 							<mapping-point in="16383" out="1"/>
@@ -25,7 +30,7 @@
 				</property-sources>
 				<property-sources property-name="Interpolate_Y" property-index="2">
 					<midi-controller smoothing="0" map-minimum="0" map-maximum="1">
-						<midi-message-spec type="7-bit-control-change" port="0" channel="0" number="17"/>
+						<midi-message-spec type="14-bit-control-change" port="0" channel="0" number="1"/>
 						<midi-mapping-curve>
 							<mapping-point in="0" out="0"/>
 							<mapping-point in="16383" out="1"/>
@@ -229,19 +234,19 @@
 					<bool>0</bool>
 				</property>
 				<property index="34" name="Gain_1">
-					<double>0.9999109607845786</double>
+					<double>1</double>
 				</property>
 				<property index="35" name="Gain_2">
-					<double>7.9326839460629e-07</double>
+					<double>0</double>
 				</property>
 				<property index="36" name="Gain_3">
-					<double>5.866651600663858e-05</double>
+					<double>0</double>
 				</property>
 				<property index="37" name="Gain_4">
-					<double>2.7320258179631282e-05</double>
+					<double>0</double>
 				</property>
 				<property index="38" name="Gain_5">
-					<double>2.2591728404107013e-06</double>
+					<double>0</double>
 				</property>
 				<property index="39" name="Gain_6">
 					<double>0</double>
@@ -745,7 +750,7 @@
 		<contraption class="Nebuliser" name="Nebuliser_1">
 			<properties>
 				<property index="0" name="InputGain">
-					<double>6.630579871797958e-05</double>
+					<double>0</double>
 				</property>
 				<property index="1" name="Amplitude">
 					<range>
@@ -762,11 +767,11 @@
 				<property index="3" name="DelayTime">
 					<range>
 						<min>0</min>
-						<max>0.22296182811260223</max>
+						<max>0</max>
 					</range>
 				</property>
 				<property index="5" name="Feedback">
-					<double>4.312801978686643e-05</double>
+					<double>0</double>
 				</property>
 				<property index="6" name="WetDryMix">
 					<double>1</double>
@@ -779,8 +784,8 @@
 				</property>
 				<property index="8" name="InteronsetTime">
 					<range>
-						<min>19.99842643737793</min>
-						<max>24.999481201171875</max>
+						<min>20</min>
+						<max>25</max>
 					</range>
 				</property>
 				<property index="9" name="QuantizeAmount">
@@ -794,20 +799,20 @@
 				</property>
 				<property index="12" name="GrainDuration">
 					<range>
-						<min>25.898887634277344</min>
-						<max>191.8221435546875</max>
+						<min>25.899505615234375</min>
+						<max>191.82757568359375</max>
 					</range>
 				</property>
 				<property index="13" name="AttDecRatio">
 					<range>
-						<min>0.4138171076774597</min>
+						<min>0.4138297736644745</min>
 						<max>0.5</max>
 					</range>
 				</property>
 				<property index="14" name="GrainSkew">
 					<range>
 						<min>0.5</min>
-						<max>0.5000064969062805</max>
+						<max>0.5</max>
 					</range>
 				</property>
 				<property index="15" name="MaxGrains">
@@ -821,8 +826,8 @@
 				</property>
 				<property index="17" name="FilterQ">
 					<range>
-						<min>0.02003905363380909</min>
-						<max>0.10004187375307083</max>
+						<min>0.019999999552965164</min>
+						<max>0.10000000149011612</max>
 					</range>
 				</property>
 				<property index="18" name="Decorrelation">
@@ -1035,7 +1040,7 @@
 					<enum>1</enum>
 				</property>
 				<property index="48" name="LFO1AsynchronousRate">
-					<double>0.5001070318333468</double>
+					<double>0.5</double>
 				</property>
 				<property index="49" name="LFO1SynchronousPeriod">
 					<double>8</double>
@@ -1089,13 +1094,13 @@
 		<contraption class="DigiGrunge" name="DigiGrunge_1">
 			<properties>
 				<property index="0" name="InputGain">
-					<double>1.2926829268292692</double>
+					<double>1.4025880277988882</double>
 				</property>
 				<property index="1" name="BitDepth">
-					<double>6.830691668730273</double>
+					<double>6.367045685805723</double>
 				</property>
 				<property index="2" name="Decimation">
-					<double>39.218947538197625</double>
+					<double>57.081081626590084</double>
 				</property>
 			</properties>
 			<presets></presets>
@@ -17530,7 +17535,7 @@
 		<notes visible="0" left="1061" top="73" width="300" height="170" encoding="UTF-8">
 			<para></para>
 		</notes>
-		<metasurface-view visible="1" left="1421" top="56" width="1410" height="811" parameters-visible="1" snapshots-visible="1" parameters-width="376" snapshots-width="227" interpolate-mode="1"></metasurface-view>
+		<metasurface-view visible="1" left="1421" top="56" width="1426" height="850" parameters-visible="1" snapshots-visible="1" parameters-width="376" snapshots-width="227" interpolate-mode="1"></metasurface-view>
 	</application-view>
 	<contraption-views>
 		<contraption-view contraption-name="SoundOut" patcher-x="72" patcher-y="-215" editor-visible="0" editor-x="380" editor-y="0"/>
