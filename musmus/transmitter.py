@@ -30,14 +30,21 @@ class Transmitter(object):
         for cback, param_name in zip(
                [self.set_x, self.set_y, self.set_snap],
                ['Interpolate_X', 'Interpolate_Y', 'Snapshot number']):
-            wait = input("Click {} midi mapping key".format(param_name))
+            wait = input("Click {} midi mapping key and press enter".format(
+                param_name))
             # Callback function with arbitrary value
             cback(1)
 
+        print("Important: you should now manually change the control type " + \
+              "for Interpolate_X and Interpolate_Y on Audiomulch to '14 " + \
+              "bit Control Change'.")
+
     def set_x(self, x):
+        self._check_pos_value(x)
         self._set_position(axis='x', pos=x)
 
     def set_y(self, y):
+        self._check_pos_value(y)
         self._set_position(axis='y', pos=y)
 
     def set_xy(self, x, y):
@@ -66,11 +73,25 @@ class Transmitter(object):
         else:
             raise ValueError('Only x and y axes are supported.')
 
-        msg = self._make_msg(control, pos)
-        self._send_msg(msg)
+        # http://www.audiomulch.com/comment/1980#comment-1980
+        msg_msb = self._make_msg(control, self._split(pos)[0])
+        msg_lsb = self._make_msg(control + 32, self._split(pos)[1])
+        for msg in [msg_msb, msg_lsb]:
+            self._send_msg(msg)
 
     def _send_msg(self, msg):
         self.port_.send(msg)
+
+    def _split(self, value):
+        """Split Dec value into MSB and LSB"""
+        msb = int("{0:014b}".format(value)[:7], 2)
+        lsb = int("{0:014b}".format(value)[7:], 2)
+
+        return (msb, lsb)
+
+    def _check_pos_value(self, value):
+        if not (0 <= value < 2**14):
+            raise ValueError("Position value should be between 0 and 16383.")
 
     def stop(self):
         self.port_.close()
