@@ -20,6 +20,7 @@ t.stop()
 ```
 
 ## Requirements
+* [PyQt5](https://wiki.python.org/moin/PyQt)
 * [axopy](https://github.com/intellsensing/axopy)
 * [pydaqs](https://github.com/intellsensing/pydaqs)
 * [mido](https://github.com/mido/mido)
