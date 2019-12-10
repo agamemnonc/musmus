@@ -1,5 +1,5 @@
 # musmus
-Muscle-controlled music.
+Muscle-controlled music performance.
 
 Check out the [instructions](instructions.md) for installation and use guidelines.
 
