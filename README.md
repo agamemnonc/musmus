@@ -1,9 +1,7 @@
 # musmus
-Muscle-controlled music performance.
+Muscle-controlled music performance. musmus stands for **mus**cle **mus**ic.
 
 Check out the [instructions](instructions.md) for installation and use guidelines.
-
-musmus stands for **mus**cle **mus**ic.
 
 Here is a minimal working example that scans the available MIDI ports and selects the first available MIDI port to establish a connection to AudioMulch. It then guides the user through the MIDI mapping procedure. Finally, it triggers a snapshot and sets the (x,y) position on the Metasurface before closing the connection.
 
