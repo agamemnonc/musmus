@@ -88,6 +88,14 @@ class _BaseTask(Task):
         if DAQ_WAIT:
             time.sleep(4)
 
+        self.timer = Counter(
+            int(TRIAL_LENGTH / READ_LENGTH) + self.dummy_cycles)
+        self.timer.timeout.connect(self.finish_trial)
+
+    def reset(self):
+        self.timer.reset()
+        self.pipeline.clear()
+
     def key_press(self, key):
         super(_BaseTask, self).key_press(key)
         if key == util.key_escape:
@@ -97,7 +105,6 @@ class _BaseTask(Task):
         self.daqstream.stop()
         self.finished.emit()
 
-
 class Calibration(_BaseTask):
     """Collects calibration data.
 
@@ -106,21 +113,16 @@ class Calibration(_BaseTask):
     def __init__(self):
         super(Calibration, self).__init__()
 
-    def prepare_daq(self, daqstream):
-        super(Calibration, self).prepare_daq(daqstream)
-        # Set trial length
-        self.timer = Counter(
-            int(TRIAL_LENGTH / READ_LENGTH))  # daq read cycles
-        self.timer.timeout.connect(self.finish_trial)
-
     def prepare_design(self, design):
         # Each block is one movement and has N_TRIALS repetitions
-        for movement in MOVEMENTS:
-            block = design.add_block()
-            for trial in range(N_TRIALS):
-                block.add_trial(attrs={
-                    'movement': movement
-                })
+        block = design.add_block()
+        trial = block.add_trial()
+        # for movement in MOVEMENTS:
+        #     block = design.add_block()
+        #     for trial in range(N_TRIALS):
+        #         block.add_trial(attrs={
+        #             'movement': movement
+        #         })
 
     def prepare_graphics(self, container):
         self.canvas = Canvas()
@@ -132,10 +134,11 @@ class Calibration(_BaseTask):
         self.writer = storage.create_task('calibration')
 
     def run_trial(self, trial):
-        self.timer.reset()
+        self.reset()
 
-        self.text.qitem.setText("{}".format(
-            trial.attrs['movement']))
+        # self.text.qitem.setText("{}".format(
+        #     trial.attrs['movement']))
+        self.text.qitem.setText("{}".format('Move'))
 
         trial.add_array('data_raw', stack_axis=1)
         trial.add_array('data_proc', stack_axis=1)
@@ -146,16 +149,18 @@ class Calibration(_BaseTask):
     def update(self, data):
         data_proc = self.pipeline.process(data)
 
-        mov = self.trial.attrs['movement']
-        # Update Arrays
-        self.trial.arrays['data_raw'].stack(data)
-        self.trial.arrays['data_proc'].stack(data_proc)
+        if self.timer.count >= self.dummy_cycles - 1:
+
+            # mov = self.trial.attrs['movement']
+            # Update Arrays
+            self.trial.arrays['data_raw'].stack(data)
+            self.trial.arrays['data_proc'].stack(data_proc)
 
         self.timer.increment()
 
     def finish_trial(self):
         # self.pic.hide()
-        self.text.qitem.setText("{}".format('relax'))
+        # self.text.qitem.setText("{}".format('relax'))
         self.writer.write(self.trial)
         self.disconnect(self.daqstream.updated, self.update)
 
@@ -238,9 +243,13 @@ class Control(_BaseTask):
 
     def update(self, data):
         data_proc = self.pipeline.process(data)
-        # TODO
-        self.x_ = int(self.prediction_pipeline.process(data_proc))
-        self.pos.emit(self.x_)
+
+        if self.timer.count >= self.dummy_cycles - 1:
+            # TODO
+            self.x_ = int(self.prediction_pipeline.process(data_proc))
+            self.pos.emit(self.x_)
+
+        self.timer.increment()
 
     def finish_trial(self):
         self.disconnect(self.daqstream.updated, self.update)
@@ -330,4 +339,5 @@ if __name__ == '__main__':
         CONTROL_X = cp.getint('midi', 'control_x')
         CONTROL_Y = cp.getint('midi', 'control_x')
         CONTROL_SNAP = cp.getint('midi', 'control_x')
+        TRIAL_LENGTH = int(1e6)
         exp.run(Control(subject=exp.subject))
