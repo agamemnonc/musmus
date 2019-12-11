@@ -51,6 +51,7 @@ class _BaseTask(Task):
     def __init__(self):
         super(_BaseTask, self).__init__()
         self.pipeline = self.make_pipeline()
+        self.dummy_cycles = int(WIN_SIZE / READ_LENGTH)
 
     def make_pipeline(self):
         # Multiple feature extraction could also be implemented using a
