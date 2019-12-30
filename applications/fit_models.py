@@ -41,15 +41,15 @@ def fit_models(data, trials):
     n_total_trials = trials.shape[0]
 
     # Collect training data
-    X = np.zeros((0,))
+    X = np.zeros((0,len(CHANNELS)))
     for trial in range(n_total_trials):
         data_trial = data.get(str(trial))[()].T
         X = np.append(X, data_trial, axis=0)
 
     X = MVC * X
     mdl = Pipeline(steps=[
-        ('mms', MinMaxScaler(feature_range=(0, 2**N_BITS - 1)))])
-    mdl.fit(X.reshape(-1,1))
+        ('mms', MinMaxScaler(feature_range=(-0.5,0.5)))])
+    mdl.fit(X)
 
     return [('mdl', mdl)]
 
@@ -75,8 +75,14 @@ if __name__ == '__main__':
     cp = ConfigParser()
     cp.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                          'config.ini'))
+    LEFT = cp.getint('channels', 'left')
+    RIGHT = cp.getint('channels', 'right')
+    UP = cp.getint('channels', 'up')
+    DOWN = cp.getint('channels', 'down')
     MVC = cp.getfloat('fit', 'mvc')
     N_BITS = cp.getint('midi', 'n_bits')
+
+    CHANNELS = [LEFT, RIGHT, UP, DOWN]
 
     subject = args.subject
     root_trials = os.path.join(os.path.dirname(os.path.realpath(__file__)),

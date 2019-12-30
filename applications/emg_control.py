@@ -35,10 +35,10 @@ from axopy import util
 from axopy.timing import Counter, Timer
 from axopy.gui.canvas import Canvas, Text
 from axopy.pipeline import (Callable, Windower, Filter, Pipeline,
-                            FeatureExtractor, Ensure2D, Estimator, Transformer)
+                            FeatureExtractor, Ensure2D, Transformer)
 from axopy.messaging import Transmitter as AxopyTransmitter
 
-from axopy.features import MeanAbsoluteValue
+from axopy.features import MeanAbsoluteValue, LogVar
 
 from musmus.transmitter import Transmitter
 
@@ -67,17 +67,16 @@ class _BaseTask(Task):
                 int(S_RATE * WIN_SIZE) - int(S_RATE * READ_LENGTH)))
 
         fe_ = FeatureExtractor([
-            ('mav', MeanAbsoluteValue())
+            ('mav', LogVar())
         ],
             n_channels=len(CHANNELS)),
 
         ensure_2d = Ensure2D(orientation='col')
-        subtractor = Callable(lambda x: x[1]-x[0])
 
         if FILTER:
-            pipeline = [windower_, filter_, fe_, ensure_2d,  subtractor]
+            pipeline = [windower_, filter_, fe_, ensure_2d]
         else:
-            pipeline = [windower_, fe_, ensure_2d, subtractor]
+            pipeline = [windower_, fe_, ensure_2d]
 
         pipeline = Pipeline(pipeline)
 
@@ -117,13 +116,10 @@ class Calibration(_BaseTask):
     def prepare_design(self, design):
         # Each block is one movement and has N_TRIALS repetitions
         block = design.add_block()
-        trial = block.add_trial()
-        # for movement in MOVEMENTS:
-        #     block = design.add_block()
-        #     for trial in range(N_TRIALS):
-        #         block.add_trial(attrs={
-        #             'movement': movement
-        #         })
+        for movement in MOVEMENTS:
+            block.add_trial(attrs={
+                'movement': movement
+            })
 
     def prepare_graphics(self, container):
         self.canvas = Canvas()
@@ -137,9 +133,9 @@ class Calibration(_BaseTask):
     def run_trial(self, trial):
         self.reset()
 
-        # self.text.qitem.setText("{}".format(
-        #     trial.attrs['movement']))
-        self.text.qitem.setText("{}".format('Move'))
+        self.text.qitem.setText("{}".format(
+            trial.attrs['movement']))
+        # self.text.qitem.setText("{}".format('Move'))
 
         trial.add_array('data_raw', stack_axis=1)
         trial.add_array('data_proc', stack_axis=1)
@@ -179,7 +175,8 @@ class Control(_BaseTask):
         Subject ID.
     """
 
-    pos = AxopyTransmitter(object)
+    pos_x = AxopyTransmitter(object)
+    pos_y = AxopyTransmitter(object)
 
     def __init__(self, subject):
         super(Control, self).__init__()
@@ -218,9 +215,16 @@ class Control(_BaseTask):
         probability vector.
         """
         pipeline = Pipeline([
-            Callable(lambda x: x.reshape(-1,1)),  # Transpose
+            # Callable(lambda x: x.reshape(-1,1)),  # Transpose
+            Callable(lambda x: x.reshape(1,-1)),  # Transpose
             Transformer(self.mdl),
-            Callable(lambda x: np.clip(x, a_min=0, a_max=2**N_BITS - 1))
+            Callable(lambda x: x.reshape(-1,)),
+            Callable(lambda x: np.array([0.5 + x[0]-x[1], 0.5 + x[2]-x[3]])),
+            Callable(lambda x: np.clip(x, a_min=0, a_max=1)),
+            Callable(lambda x: ((2**N_BITS - 1) * x).astype(np.int)),
+            # Ensure2D(orientation='col'),
+            # Windower(100),
+            # Callable(lambda x: np.mean(x, axis=1, keepdims=False).astype(np.int))
         ])
 
         return pipeline
@@ -239,16 +243,19 @@ class Control(_BaseTask):
         self.pipeline.clear()
         # init pos in the middle of the screen
         self.x_ = int(2**N_BITS / 2)
+        self.y_ = int(2**N_BITS / 2)
         self.connect(self.daqstream.updated, self.update)
-        self.connect(self.pos, self.transmitter.set_x)
+        self.connect(self.pos_x, self.transmitter.set_x)
+        self.connect(self.pos_y, self.transmitter.set_y)
 
     def update(self, data):
         data_proc = self.pipeline.process(data)
 
         if self.timer.count >= self.dummy_cycles - 1:
-            # TODO
-            self.x_ = int(self.prediction_pipeline.process(data_proc))
-            self.pos.emit(self.x_)
+            pred = self.prediction_pipeline.process(data_proc)
+            self.x_, self.y_ = pred
+            self.pos_x.emit(self.x_)
+            self.pos_y.emit(self.y_)
 
         self.timer.increment()
 
@@ -275,6 +282,7 @@ if __name__ == '__main__':
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument('--trigno', action='store_true')
     source.add_argument('--myo', action='store_true')
+    source.add_argument('--nidaq', action='store_true')
     source.add_argument('--noise', action='store_true')
     args = parser.parse_args()
 
@@ -282,15 +290,17 @@ if __name__ == '__main__':
     cp.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                          'config.ini'))
     READ_LENGTH = cp.getfloat('hardware', 'read_length')
-    LEFT = cp.getint('hardware', 'left')
-    RIGHT = cp.getint('hardware', 'right')
+    LEFT = cp.getint('channels', 'left')
+    RIGHT = cp.getint('channels', 'right')
+    UP = cp.getint('channels', 'up')
+    DOWN = cp.getint('channels', 'down')
     WIN_SIZE = cp.getfloat('processing', 'win_size')
     FILTER = cp.getboolean('processing', 'filter')
     LOWCUT = cp.getfloat('processing', 'lowcut')
     HIGHCUT = cp.getfloat('processing', 'highcut')
     FILTER_ORDER = cp.getfloat('processing', 'filter_order')
 
-    CHANNELS = [LEFT, RIGHT]
+    CHANNELS = [RIGHT, LEFT, UP, DOWN]
 
     if args.trigno:
         from pytrigno import TrignoEMG
@@ -313,6 +323,16 @@ if __name__ == '__main__':
             channels=CHANNELS,
             zero_based=False,
             samples_per_read=int(S_RATE * READ_LENGTH))
+
+    elif args.nidaq:
+        from pydaqs.nidaq import Nidaq
+        S_RATE = cp.getfloat('hardware', 'rate')
+        dev = Nidaq(
+            channels=CHANNELS,
+            rate=S_RATE,
+            zero_based=True,
+            samples_per_read=int(S_RATE * READ_LENGTH)
+        )
 
     elif args.noise:
         from axopy.daq import NoiseGenerator
@@ -338,7 +358,7 @@ if __name__ == '__main__':
         MIDI_CHANNEL = cp.getint('midi', 'midi_channel')
         MIDI_PORT = cp.get('midi', 'midi_port')
         CONTROL_X = cp.getint('midi', 'control_x')
-        CONTROL_Y = cp.getint('midi', 'control_x')
-        CONTROL_SNAP = cp.getint('midi', 'control_x')
+        CONTROL_Y = cp.getint('midi', 'control_y')
+        CONTROL_SNAP = cp.getint('midi', 'control_snap')
         TRIAL_LENGTH = int(1e6)
         exp.run(Control(subject=exp.subject))
