@@ -85,9 +85,6 @@ class _BaseTask(Task):
     def prepare_daq(self, daqstream):
         self.daqstream = daqstream
         self.daqstream.start()
-        if DAQ_WAIT:
-            time.sleep(4)
-
         self.timer = Counter(
             int(TRIAL_LENGTH / READ_LENGTH) + self.dummy_cycles)
         self.timer.timeout.connect(self.finish_trial)
@@ -280,20 +277,24 @@ if __name__ == '__main__':
     task.add_argument('--calibrate', action='store_true')
     task.add_argument('--control', action='store_true')
     source = parser.add_mutually_exclusive_group(required=True)
-    source.add_argument('--trigno', action='store_true')
     source.add_argument('--myo', action='store_true')
     source.add_argument('--nidaq', action='store_true')
     source.add_argument('--noise', action='store_true')
     args = parser.parse_args()
 
+    if args.myo:
+        dev_name = 'myo'
+    elif args.nidaq:
+        dev_name = 'nidaq'
+
     cp = ConfigParser()
     cp.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                          'config.ini'))
     READ_LENGTH = cp.getfloat('hardware', 'read_length')
-    LEFT = cp.getint('channels', 'left')
-    RIGHT = cp.getint('channels', 'right')
-    UP = cp.getint('channels', 'up')
-    DOWN = cp.getint('channels', 'down')
+    UP = cp.getint('channels_' + dev_name, 'up')
+    DOWN = cp.getint('channels_' + dev_name, 'down')
+    RIGHT = cp.getint('channels_' + dev_name, 'right')
+    LEFT = cp.getint('channels_' + dev_name, 'left')
     WIN_SIZE = cp.getfloat('processing', 'win_size')
     FILTER = cp.getboolean('processing', 'filter')
     LOWCUT = cp.getfloat('processing', 'lowcut')
@@ -302,22 +303,12 @@ if __name__ == '__main__':
 
     CHANNELS = [RIGHT, LEFT, UP, DOWN]
 
-    if args.trigno:
-        from pytrigno import TrignoEMG
-        S_RATE = 2000.
-        DAQ_WAIT = True
-        dev = TrignoEMG(
-            channels=CHANNELS,
-            zero_based=False,
-            samples_per_read=int(S_RATE * READ_LENGTH))
-
-    elif args.myo:
+    if args.myo:
         import myo
         from pydaqs.myo import MyoEMG
         from pathlib import Path
         MYO_SDK_PATH = cp.get('hardware', 'myo_sdk_path')
         S_RATE = 200.
-        DAQ_WAIT = False
         myo.init(sdk_path=Path(MYO_SDK_PATH))
         dev = MyoEMG(
             channels=CHANNELS,
@@ -330,13 +321,12 @@ if __name__ == '__main__':
         dev = Nidaq(
             channels=CHANNELS,
             rate=S_RATE,
-            zero_based=True,
+            zero_based=False,
             samples_per_read=int(S_RATE * READ_LENGTH)
         )
 
     elif args.noise:
         from axopy.daq import NoiseGenerator
-        DAQ_WAIT = False
         S_RATE = 2000.
         dev = NoiseGenerator(
             rate=S_RATE,
