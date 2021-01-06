@@ -75,10 +75,12 @@ if __name__ == '__main__':
     cp = ConfigParser()
     cp.read(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                          'config.ini'))
-    LEFT = cp.getint('channels', 'left')
-    RIGHT = cp.getint('channels', 'right')
-    UP = cp.getint('channels', 'up')
-    DOWN = cp.getint('channels', 'down')
+    DEVICE = cp.get('hardware', 'device')
+    channels_lookup = 'channels_' + DEVICE
+    LEFT = cp.getint(channels_lookup, 'left')
+    RIGHT = cp.getint(channels_lookup, 'right')
+    UP = cp.getint(channels_lookup, 'up')
+    DOWN = cp.getint(channels_lookup, 'down')
     MVC = cp.getfloat('fit', 'mvc')
     N_BITS = cp.getint('midi', 'n_bits')
 
